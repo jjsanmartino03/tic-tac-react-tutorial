@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Board } from "./components/board";
+import Board from "./components/board";
 
 export default function Game() {
   const [history, setHistory] = useState([
@@ -101,8 +101,8 @@ export default function Game() {
       <button
         key={i}
         className={
-          (step === i ? " " : "") +
-          "px-6 py-4 shadow-lg rounded-lg text-xl font-bold text-color-3 bg-color-1"
+          (step === i ? " bg-green-400 " : "bg-color-1 ") +
+          "px-6 py-4 shadow-lg rounded-lg text-xl font-bold duration-200 text-color-3 "
         }
         onClick={() => jumpTo(i)}
       >
@@ -127,14 +127,16 @@ export default function Game() {
         >
           {status}
         </h3>
-        <div className="flex flex-col md:flex-row gap-8 md:gap-0 pb-10 pt-8 w-full">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-0 pb-10 pt-8 w-full">
           <Board
             squares={squares}
             someoneWon={someoneWon}
             onClick={handleClick}
           />
-          <div className="w-full flex flex-col items-center justify-start">
-            <label className="flex justify-start items-center mb-4">
+          <div className="w-full flex flex-col items-center justify-between">
+            <div className='text-xl pb-3 text-indigo-700'>Go through moves</div>
+            <div className="grid grid-cols-3 gap-3 mb-4 items-evenly justify-evenly">{movementsList}</div>
+            <label className="flex justify-start items-center">
               <div className="bg-white border-2 rounded border-gray-400 w-6 h-6 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
                 <input
                   checked={reverse}
@@ -152,9 +154,8 @@ export default function Game() {
                   <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
                 </svg>
               </div>
-              <div className="text-lg select-none">Reverse list</div>
+              <div className="text-lg select-none">Revert list</div>
             </label>
-            <div className="grid grid-cols-3 gap-3">{movementsList}</div>
           </div>
         </div>
       </div>

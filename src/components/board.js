@@ -1,55 +1,53 @@
 import React from "react";
+import Square from "./square";
 
-function Square(props) {
-  return (
-    <button
-      onClick={() => {
-        props.onClick();
-      }}
-      className={"square " + props.className}
-    >
-      {props.value}
-    </button>
-  );
-}
+export default function Board(props) {
+  const renderSquare = (i, highlight) => {
+    let className = highlight
+      ? "bg-color-5 text-white "
+      : "bg-color-4 text-color-5 ";
 
-export class Board extends React.Component {
-  renderSquare = (i, highlight) => {
-    let className = highlight ? "bg-color-5 text-white " : "bg-color-4 text-color-5 ";
-    className += "m-1";
+    className += " square border-0 w-24 h-24 square-effects m-1 font-bold d-2";
     return (
       <Square
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
+        value={props.squares[i]}
+        onClick={() => props.onClick(i)}
         key={i}
         className={className}
       />
     );
   };
 
-  render() {
-    let winner = this.props.someoneWon;
-    let squareContainer = [];
+  let winner = props.someoneWon;
+  let squareContainer = [];
 
-    for (let i = 0; i < 3; i++) {
-      let arSquares = [];
+  for (let i = 0; i < 3; i++) {
+    let arSquares = [];
 
-      for (let j = 0; j < 3; j++) {
-        let id = i * 3 + j;
-        let champion;
-        if (!winner) {champion = false}
-        else {
-          champion = (winner[1].includes(id))? true :false;
-        }
-        arSquares.push(this.renderSquare(id, champion));
+    for (let j = 0; j < 3; j++) {
+      let id = i * 3 + j;
+      let champion;
+      if (!winner) {
+        champion = false;
+      } else {
+        champion = winner[1].includes(id) ? true : false;
       }
-
-      squareContainer.push(
-        <div key={i} className="board-row flex justify-center flex-row">
-          {arSquares}
-        </div>
-      );
+      arSquares.push(renderSquare(id, champion));
     }
-    return <div md className="board-container my-auto w-full h-full flex flex-col justify-center items-center">{squareContainer}</div>;
+
+    squareContainer.push(
+      <div key={i} className="board-row flex justify-center flex-row">
+        {arSquares}
+      </div>
+    );
   }
+
+  return (
+    <div
+      md
+      className="board-container my-auto w-full h-full flex flex-col justify-center items-center"
+    >
+      {squareContainer}
+    </div>
+  );
 }

@@ -16,12 +16,12 @@
 }
 
 .square {
+  transition: 0.2s;
   font-size: 2.7em;
-  font-weight: bold;
-  height: 6rem;
-  width: 6rem;
-  color: var(--color-6);
-  border: 0px;
+}
+
+.square-effects:hover {
+  border-radius: 1rem;
 }
 
 .board-row:nth-child(1) > .square:nth-child(1) {
