@@ -1,54 +1,22 @@
-import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
-
+import React, { useState } from "react";
 import { Board } from "./components/board";
 
-export default class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      history: [// The history of movements and positions
-        {
-          squares: Array(9).fill(null), // Position 0
-          moveLocation: [0, 0],
-        }
-      ],
-      xIsNext: true, // if false, "O" is next
-      step: 0, // The current movement numver
-      sort: true, // Reverse or not the list
-    };
-  }
+export default function Game() {
+  const [history, setHistory] = useState([
+    {
+      // The history of movements and positions
+      squares: Array(9).fill(null), // Position 0
+      moveLocation: [0, 0],
+    },
+  ]);
+  const [isNext, setIsNext] = useState("x");
+  const [step, setStep] = useState(0);
+  const [reverse, setReverse] = useState(false);
 
-  handleClick = (i) => { // handle click of a square
-    let history = this.state.history;
-    let step = this.state.step;
-    let current = history[step].squares; // The current position
-    let squares = current.slice(); // Make a copy
-
-    if (squares[i] || this.checkWinner(squares)) {
-      return; // if the square is ocuppied or the game finished, do nothing
-    };
-
-    if (step + 1 !== history.length) { // If the current step is not the length of the game, cut the restant positions, to start again from the current step
-      history = history.slice(0, step + 1);
-    };
-
-    squares[i] = this.state.xIsNext ? "X" : "O";
-
-    history.push({
-      squares,
-      moveLocation: [Math.floor(i / 3), i % 3],
-    }); // push the movement into the history
-
-    this.setState({
-      history,
-      xIsNext: !this.state.xIsNext, // Change the turn
-      step: this.state.step + 1,
-    });
-  };
-
-  checkWinner = (squares) => { // Check the winner
-    const possibleLines = [ // possible lines to win
+  const checkWinner = (squares) => {
+    // Check the winner
+    const possibleLines = [
+      // possible lines to win
       [0, 1, 2],
       [3, 4, 5],
       [6, 7, 8],
@@ -70,84 +38,126 @@ export default class Game extends React.Component {
     return null;
   };
 
-  jumpTo = (move) => { // change the step in which the game is
-    this.setState({
-      xIsNext: (move % 2 === 0),
-      step: move,
-    })
-  }
-  sortMoves = () => {// reverse the list
-    this.setState(
-      {
-        sort: !this.state.sort,
+  const handleClick = (i) => {
+    // handle click of a square
+    setHistory((prevHistory) => {
+      const currentSquares = [...history[step].squares]; // The current position
+
+      if (currentSquares[i] || checkWinner(currentSquares)) {
+        return prevHistory; // if the square is ocuppied or the game finished, do nothing
       }
-    )
+
+      if (step + 1 !== prevHistory.length) {
+        // If the current step is not the length of the game, cut the restant positions, to start again from the current step
+        prevHistory = prevHistory.slice(0, step + 1);
+      }
+
+      currentSquares[i] = isNext === "x" ? "X" : "O";
+
+      setStep((step) => step + 1);
+      setIsNext((prevPlayer) => (prevPlayer === "x" ? "o" : "x"));
+
+      return [
+        ...prevHistory,
+        {
+          squares: currentSquares,
+          moveLocation: [Math.floor(i / 3), i % 3],
+        },
+      ];
+    });
+  };
+
+  const jumpTo = (move) => {
+    // change the step in which the game is
+    const nextPlayer = move % 2 === 0 ? "x" : "o";
+    setStep(() => move);
+    setIsNext(nextPlayer);
+  };
+
+  const sortMoves = () => {
+    // reverse the list
+    setReverse((reverse) => !reverse);
+  };
+
+  const squares = history[step].squares;
+  const someoneWon = checkWinner(squares);
+
+  let status;
+
+  if (someoneWon) {
+    status = `The winner is: ${someoneWon[0]}`;
+  } else if (squares.every((x) => x)) {
+    status = "It's a draw!";
+  } else {
+    status = "Next player: " + (isNext === "x" ? "X" : "O");
   }
-  render = () => {
-    let history = this.state.history;
-    let step = this.state.step;
-    let squares = history[step].squares;
 
-    let someoneWon = this.checkWinner(squares);
+  const movementsList = []; // the array of buttons to change the current step in the game
 
-    let status;
+  for (let i = 0; i < history.length; i++) {
+    let [a, b] = history[i].moveLocation;
 
-    if (someoneWon) {
-      status = `The winner is: ${someoneWon[0]}`;
-    } else if (squares.every(x => x)) {
-      status = "It's a draw!";
-    } else {
-      status = "Next turn: " + (this.state.xIsNext ? "X" : "O");
-    };
+    movementsList.push(
+      <button
+        key={i}
+        className={
+          (step === i ? " " : "") +
+          "px-6 py-4 shadow-lg rounded-lg text-xl font-bold text-color-3 bg-color-1"
+        }
+        onClick={() => jumpTo(i)}
+      >
+        {i}
+      </button>
+    );
+  }
 
-    var componentsArray = []; // the array of buttons to change the current step in the game
+  if (reverse) {
+    movementsList.reverse();
+  }
 
-    for (let i = 0; i < history.length; i++) {
-      let [a, b] = history[i].moveLocation;
-
-      componentsArray.push(
-        <li key={i}>
-          <Button
-            className={(step === i ? "selected-move " : "") + "back-rose mb-2 py-1 text-warning border-0"}
-            onClick={() => this.jumpTo(i)}>
-            {(i === 0 ? "Go to the start" :
-              `Go to move #${i}`) + ` at (${a},${b})`}
-          </Button>
-        </li>
-      )
-    }
-
-    if (!this.state.sort) {
-      componentsArray.reverse()
-    }
-    
-    return (
-      <Container fluid className="mb-5 d-flex flex-column align-items-center pt-5">
-        <h1 className="text-center text-dark">Tic-tac-toe React App</h1>
-        <Row className="game justify-content-center mt-4">
-
+  return (
+    <div className="app-wrapper w-screen bg-color-1 min-h-screen flex justify-center items-center p-4">
+      <div className="game-container bg-color-3 shadow-xl pb-5 pt-8 px-8 flex flex-col items-center rounded-xl sm:w-8/12 w-full">
+        <h1 className="text-center m-0 pb-3 text-6xl">Tic-tac-toe</h1>
+        <h3
+          className={
+            "text-2xl p-1.5 rounded text-color-5 mt-1 " +
+            (someoneWon ? "bg-green-400" : "bg-color-2")
+          }
+        >
+          {status}
+        </h3>
+        <div className="flex flex-col md:flex-row gap-8 md:gap-0 pb-10 pt-8 w-full">
           <Board
             squares={squares}
             someoneWon={someoneWon}
-            onClick={this.handleClick}
+            onClick={handleClick}
           />
-          <Col md className="mt-4 mt-md-0 board-container d-flex flex-column game-info">
-            <Container>
-              <h3 className="text-center text-light w-100">{status}</h3>
-              <div className="my-2 d-flex align-items-center">
-                <input type="checkbox" id="revert" className="mx-0 mr-2" onChange={this.sortMoves} />
-                <label className="revert-label m-0" for="revert">Revert list</label>
+          <div className="w-full flex flex-col items-center justify-start">
+            <label className="flex justify-start items-center mb-4">
+              <div className="bg-white border-2 rounded border-gray-400 w-6 h-6 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
+                <input
+                  checked={reverse}
+                  onChange={() => setReverse((reverse) => !reverse)}
+                  type="checkbox"
+                  className="opacity-0 absolute"
+                />
+                <svg
+                  className={
+                    "text-indigo-600 fill-current w-4 h-4 text-green-500 pointer-events-none" +
+                    (reverse ? " block" : " hidden")
+                  }
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                </svg>
               </div>
-
-              <ol className="p-0 d-flex w-100 flex-column align-items-center">
-                {componentsArray}
-              </ol>
-            </Container>
-
-          </Col>
-        </Row>
-
-      </Container>
-    );
-  };
+              <div className="text-lg select-none">Reverse list</div>
+            </label>
+            <div className="grid grid-cols-3 gap-3">{movementsList}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

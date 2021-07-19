@@ -1,5 +1,4 @@
 import React from "react";
-import {Col,} from "react-bootstrap";
 
 function Square(props) {
   return (
@@ -16,8 +15,8 @@ function Square(props) {
 
 export class Board extends React.Component {
   renderSquare = (i, highlight) => {
-    let className = highlight ? "win-square " : "";
-    className += "d-flex text-center p-0 justify-content-center align-items-center";
+    let className = highlight ? "bg-color-5 text-white " : "bg-color-4 text-color-5 ";
+    className += "m-1";
     return (
       <Square
         value={this.props.squares[i]}
@@ -46,12 +45,11 @@ export class Board extends React.Component {
       }
 
       squareContainer.push(
-        <div key={i} className="board-row m-0 p-0 d-flex justify-content-center w-auto flex-row board-row">
+        <div key={i} className="board-row flex justify-center flex-row">
           {arSquares}
         </div>
       );
-      console.log(squareContainer)
     }
-    return <Col md className="board-container p-5 shadow d-flex flex-column align-items-center w-auto p-0">{squareContainer}</Col>;
+    return <div md className="board-container my-auto w-full h-full flex flex-col justify-center items-center">{squareContainer}</div>;
   }
 }

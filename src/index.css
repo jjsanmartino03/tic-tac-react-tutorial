@@ -1,60 +1,41 @@
-body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
-  background-color: rgb(153, 81, 225)!important;
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,300;1,400;1,500&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-1: #457b9dff;
+  --color-2: #a8dadcff;
+  --color-3: #f1faeeff;
+  --color-4: #e63946ff;
+  --color-5: #1d3557ff;
 }
-.board-container{
-  height: fit-content!important;
+
+.app-wrapper {
+  font: 14px "Ubuntu", Futura, sans-serif;
 }
+
 .square {
-  background: rebeccapurple;
-  border: 1px solid rgb(59, 19, 99);
   font-size: 2.7em;
   font-weight: bold;
-  height: 90px;
-  margin-right: -1px;
-  margin-top: -1px;
-  width: 90px;
-  color: #dbbefc;
-}
-h1{
-  font-size: 3.5rem!important;
-}
-.back-rose{
-  background-color: rgb(153, 81, 225)!important;
-  box-shadow: 0 .5rem 1rem rgba(0,0,0,.35)!important
-}
-.game-info{
-  min-width: 300px!important;
-}
-.game-info h3{
-  font-size: 2rem;
-}
-.square:focus {
-  outline: none;
+  height: 6rem;
+  width: 6rem;
+  color: var(--color-6);
+  border: 0px;
 }
 
-.win-square{
-  color: rebeccapurple;
-  background:transparent!important;
-}
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
-.revert-label{
-  font-size: 20px!important;
+.board-row:nth-child(1) > .square:nth-child(1) {
+  border-top-left-radius: 15px;
 }
 
-.game{
-  gap:30px;
+.board-row:nth-child(1) > .square:nth-child(3) {
+  border-top-right-radius: 15px;
 }
-.game-info {
-  margin-left: 20px;
+
+.board-row:nth-child(3) > .square:nth-child(1) {
+  border-bottom-left-radius: 15px;
 }
-.selected-move {
-  text-decoration: underline rebeccapurple;
-  font-weight: bold!important;
-}
-.win-square{
-  background-color: burlywood;
+
+.board-row:nth-child(3) > .square:nth-child(3) {
+  border-bottom-right-radius: 15px;
 }
