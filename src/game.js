@@ -101,8 +101,8 @@ export default function Game() {
       <button
         key={i}
         className={
-          (step === i ? " bg-green-400 " : "bg-color-1 ") +
-          "px-6 py-4 shadow-lg rounded-lg text-xl font-bold duration-200 text-color-3 "
+          (step === i ? " bg-color-2 text-color5 " : "bg-color-1 text-color-3 ") +
+          "px-6 py-4 shadow-lg rounded-lg text-xl font-bold duration-200"
         }
         onClick={() => jumpTo(i)}
       >
