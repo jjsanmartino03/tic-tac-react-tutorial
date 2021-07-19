@@ -5,6 +5,7 @@ export default function Square(props) {
         props.onClick();
       }}
       className={props.className}
+      disabled={props.disabled}
     >
       {props.value}
     </button>

@@ -39,3 +39,7 @@
 .board-row:nth-child(3) > .square:nth-child(3) {
   border-bottom-right-radius: 15px;
 }
+
+.refresh-icon{
+  background: url('https://api.iconify.design/oi-reload.svg') no-repeat center center / contain;
+}

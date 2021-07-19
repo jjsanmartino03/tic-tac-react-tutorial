@@ -92,16 +92,20 @@ export default function Game() {
     status = "Next player: " + (isNext === "x" ? "X" : "O");
   }
 
+  let gameFinished = !!(someoneWon || squares.every((x) => x))
+
   const movementsList = []; // the array of buttons to change the current step in the game
 
-  for (let i = 0; i < history.length; i++) {
+  for (let i = 1; i < history.length; i++) {
     //let [a, b] = history[i].moveLocation;
 
     movementsList.push(
       <button
         key={i}
         className={
-          (step === i ? " bg-color-2 text-color5 " : "bg-color-1 text-color-3 ") +
+          (step === i
+            ? " bg-color-2 text-color5 "
+            : "bg-color-1 text-color-3 ") +
           "px-6 py-4 shadow-lg rounded-lg text-xl font-bold duration-200"
         }
         onClick={() => jumpTo(i)}
@@ -119,23 +123,42 @@ export default function Game() {
     <div className="app-wrapper w-screen bg-color-1 min-h-screen flex justify-center items-center p-4">
       <div className="game-container bg-color-3 shadow-xl pb-5 pt-8 px-8 flex flex-col items-center rounded-xl sm:w-8/12 w-full">
         <h1 className="text-center m-0 pb-3 text-6xl">Tic-tac-toe</h1>
-        <h3
-          className={
-            "text-2xl p-1.5 rounded text-color-5 mt-1 " +
-            (someoneWon ? "bg-green-400" : "bg-color-2")
-          }
-        >
-          {status}
-        </h3>
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-0 pb-10 pt-8 w-full">
+        <div className="mt-1 flex space-x-3 items-center">
+          <h3
+            className={
+              "text-2xl p-1.5 rounded text-color-5 " +
+              (someoneWon ? "bg-green-400" : "bg-color-2")
+            }
+          >
+            {status}
+          </h3>
+          <button
+            onClick={() => {
+              setStep(0);
+              setHistory((history) => [history[0]]);
+            }}
+            className="bg-indigo-300 w-10 h-10 rounded-full flex justify-center items-center"
+          >
+            <span className="refresh-icon w-full h-full m-2"></span>
+          </button>
+        </div>
+        <div className="flex flex-col transition duration-1000 lg:flex-row gap-8 lg:gap-0 pb-10 pt-8 w-full">
           <Board
             squares={squares}
             someoneWon={someoneWon}
             onClick={handleClick}
+            gameFinished={gameFinished}
           />
-          <div className="w-full flex flex-col items-center justify-between">
-            <div className='text-xl pb-3 text-indigo-700'>Go through moves</div>
-            <div className="grid grid-cols-3 gap-3 mb-4 items-evenly justify-evenly">{movementsList}</div>
+          <div
+            className={
+              "w-full transition-all duration-1000 transform scale-0 flex-col items-center justify-between" +
+              (step === 0 ? " scale-0 hidden" : " scale-100 flex")
+            }
+          >
+            <div className="text-xl pb-3 text-indigo-700">Go through moves</div>
+            <div className="grid grid-cols-3 gap-3 mb-4 items-evenly justify-evenly">
+              {movementsList}
+            </div>
             <label className="flex justify-start items-center">
               <div className="bg-white border-2 rounded border-gray-400 w-6 h-6 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
                 <input

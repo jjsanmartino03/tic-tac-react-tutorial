@@ -2,18 +2,26 @@ import React from "react";
 import Square from "./square";
 
 export default function Board(props) {
+  console.log(props.gameFinished, 'h');
   const renderSquare = (i, highlight) => {
     let className = highlight
       ? "bg-color-5 text-white "
       : "bg-color-4 text-color-5 ";
 
-    className += " square border-0 w-24 h-24 square-effects m-1 font-bold d-2";
+    if (!props.gameFinished){
+      className += ' square-effects ';
+    }else{
+      className += 'cursor-default ';
+    }
+
+    className += " square border-0 w-24 h-24 m-1 font-bold d-2";
     return (
       <Square
         value={props.squares[i]}
         onClick={() => props.onClick(i)}
         key={i}
         className={className}
+        disabled={props.gameFinished}
       />
     );
   };
